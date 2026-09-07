@@ -6,12 +6,6 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ClaimController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-*/
-
 Route::get('/', function () {
     return view('index');
 })->name('home');
@@ -23,12 +17,27 @@ Route::get('/about', function () {
     ]);
 })->name('about');
 
-Route::get('/blog', [BlogController::class, 'index'])->name('blog2');
+Route::get('/blog', [BlogController::class, 'index'])->name('blog');
 Route::get('/blog2', [AdminController::class, 'blog2'])->name('blog2');
+Route::get('/from', [AdminController::class, 'create'])->name('from');
+Route::post('/insert', [AdminController::class, 'insert'])->name('insert');
 
-Route::get('/from', [BlogController::class, 'create'])->name('from');
+// Author prefix routes
+Route::prefix('author')->group(function () {
+    Route::get('/blog2', [AdminController::class, 'blog2'])->name('author.blog2');
+    Route::get('/create', [AdminController::class, 'create'])->name('author.create');
+    Route::post('/insert', [AdminController::class, 'insert'])->name('author.insert');
+    Route::get('/edit/{id}', [AdminController::class, 'edit'])->name('author.edit');
+    Route::post('/update/{id}', [AdminController::class, 'update'])->name('author.update');
+    Route::get('/delete/{id}', [AdminController::class, 'delete'])->name('author.delete');
+    Route::get('/change/{id}', [AdminController::class, 'change'])->name('author.change');
+});
 
-Route::post('/insert', [BlogController::class, 'store'])->name('insert');
+// Route names for author/create, author/blog2, author/edit/{id}
+Route::get('/author/create', [AdminController::class, 'create'])->name('author/create');
+Route::get('/author/blog2', [AdminController::class, 'blog2'])->name('author/blog2');
+Route::get('/author/edit/{id}', [AdminController::class, 'edit'])->name('edit');
+Route::get('/edit/{id}', [AdminController::class, 'edit']);
 
 Route::get('/test-db', function () {
     try {
@@ -44,7 +53,6 @@ Route::get('/test-db', function () {
     }
 });
 
-
 Route::get('/student/{id}', function ($id) {
     return view('student', ['id' => $id]);
 })->name('student.profile');
@@ -52,20 +60,13 @@ Route::get('/student/{id}', function ($id) {
 Route::get('/claim', [ClaimController::class, 'create'])->name('claim.create');
 Route::post('/claim', [ClaimController::class, 'store'])->name('claim.store');
 
-
-
-
 Route::get('/blog/{id}/status', [AdminController::class, 'change'])->name('blog.changeStatus');
 Route::get('/change/{id}', [AdminController::class, 'change'])->name('change');
 
-Route::get('/edit/{id}', [AdminController::class, 'edit'])->name('edit');
 Route::post('/update/{id}', [AdminController::class, 'update'])->name('update');
-
 
 Route::get('/blog/{id}/delete', [BlogController::class, 'delete'])->name('blog.delete');
 Route::get('/delete/{id}', [BlogController::class, 'delete'])->name('delete');
-
-
 
 Route::fallback(function () {
     return 'ไม่พบหน้าเว็บ';
